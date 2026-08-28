@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <title>StudyPlanner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-header">
+            <div class="app-title">StudyPlanner</div>
+
+            <button class="icon-button" id="addSubjectBtn" title="Add Subject">
+                +
+            </button>
+        </div>
+
+        <div class="subjects-container" id="subjectsContainer"></div>
+
+        <div class="sidebar-bottom">
+            <button class="settings-button" id="settingsBtn">
+                <span>⚙</span>
+                Settings
+            </button>
+        </div>
+
+    </aside>
+
+    <!-- SIDEBAR RESIZER -->
+    <div class="sidebar-resizer" id="sidebarResizer"></div>
+
+
+    <!-- MAIN -->
+    <main class="main">
+
+        <!-- TOP TOOLBAR -->
+        <header class="toolbar">
+
+            <div class="toolbar-left">
+
+                <button class="toolbar-button primary" id="addNoteBtn">
+                    <span>＋</span>
+                    Add Note
+                </button>
+
+                <button class="toolbar-button danger" id="deleteNoteBtn" disabled>
+                    Delete Note
+                </button>
+
+                <div class="toolbar-divider"></div>
+
+                <select id="fontSizeSelect" class="font-select" disabled>
+                    <option value="3">Normal</option>
+                    <option value="1">Small</option>
+                    <option value="2">Medium</option>
+                    <option value="4">Large</option>
+                    <option value="5">Huge</option>
+                </select>
+
+                <button class="format-button" data-command="bold" title="Bold" disabled>
+                    <b>B</b>
+                </button>
+
+                <button class="format-button" data-command="italic" title="Italic" disabled>
+                    <i>I</i>
+                </button>
+
+                <button class="format-button" data-command="underline" title="Underline" disabled>
+                    <u>U</u>
+                </button>
+
+                <div class="toolbar-divider"></div>
+
+                <select id="formatSelect" class="font-select" disabled>
+                    <option value="p">Body</option>
+                    <option value="h1">Heading 1</option>
+                    <option value="h2">Heading 2</option>
+                    <option value="h3">Heading 3</option>
+                </select>
+
+                <button class="format-button" data-command="insertUnorderedList" title="Bulleted List" disabled>
+                    ☷
+                </button>
+
+                <button class="format-button" data-command="insertOrderedList" title="Numbered List" disabled>
+                    ≡
+                </button>
+
+                <button class="format-button" data-command="justifyLeft" title="Align Left" disabled>
+                    ≡
+                </button>
+
+                <button class="format-button" data-command="justifyCenter" title="Center" disabled>
+                    ≡
+                </button>
+
+                <button class="format-button" data-command="justifyRight" title="Align Right" disabled>
+                    ≡
+                </button>
+
+                <button class="format-button" id="linkBtn" title="Add Link" disabled>
+                    🔗
+                </button>
+
+            </div>
+
+            <div class="toolbar-right">
+
+                <span class="save-status" id="saveStatus">
+                    Saved
+                </span>
+
+                <button class="toolbar-button" id="exportNoteBtn" disabled>
+                    Export Note
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- WORKSPACE -->
+        <section class="workspace">
+
+            <!-- EMPTY STATE -->
+            <div class="empty-state" id="emptyState">
+
+                <div class="empty-icon">📝</div>
+
+                <h1>StudyPlanner</h1>
+
+                <p>
+                    Choose a topic to see your notes.
+                </p>
+
+                <button class="empty-add-button" id="emptyAddSubjectBtn">
+                    + Add Subject
+                </button>
+
+            </div>
+
+
+            <!-- NOTE AREA -->
+            <div class="note-area hidden" id="noteArea">
+
+                <div class="note-header">
+
+                    <input
+                        id="noteTitle"
+                        class="note-title"
+                        type="text"
+                        value=""
+                        placeholder="Untitled Note"
+                        autocomplete="off"
+                    >
+
+                    <div class="note-date" id="noteDate"></div>
+
+                </div>
+
+                <div
+                    id="editor"
+                    class="editor"
+                    contenteditable="true"
+                    spellcheck="true"
+                    data-placeholder="Start writing..."
+                ></div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ADD SUBJECT MODAL -->
+<div class="modal-overlay hidden" id="subjectModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+            <h2>Add Subject</h2>
+
+            <button class="modal-close" data-close="subjectModal">
+                ×
+            </button>
+        </div>
+
+        <label>
+            Subject name
+            <input
+                id="subjectNameInput"
+                type="text"
+                placeholder="Mathematics"
+                maxlength="80"
+            >
+        </label>
+
+        <label>
+            Subject color
+            <input
+                id="subjectColorInput"
+                type="color"
+                value="#ffffff"
+            >
+        </label>
+
+        <div class="modal-actions">
+            <button class="secondary-button" data-close="subjectModal">
+                Cancel
+            </button>
+
+            <button class="primary-button" id="createSubjectBtn">
+                Create Subject
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ADD TOPIC MODAL -->
+<div class="modal-overlay hidden" id="topicModal">
+
+    <div class="modal">
+
+        <div class="modal-header">
+            <h2>Add Topic</h2>
+
+            <button class="modal-close" data-close="topicModal">
+                ×
+            </button>
+        </div>
+
+        <label>
+            Topic name
+            <input
+                id="topicNameInput"
+                type="text"
+                placeholder="Algebra"
+                maxlength="80"
+            >
+        </label>
+
+        <div class="modal-actions">
+            <button class="secondary-button" data-close="topicModal">
+                Cancel
+            </button>
+
+            <button class="primary-button" id="createTopicBtn">
+                Create Topic
+            </button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay hidden" id="confirmModal">
+
+    <div class="modal small-modal">
+
+        <div class="modal-header">
+            <h2 id="confirmTitle">Are you sure?</h2>
+        </div>
+
+        <p id="confirmMessage"></p>
+
+        <div class="modal-actions">
+
+            <button class="secondary-button" id="confirmCancelBtn">
+                Cancel
+            </button>
+
+            <button class="danger-button" id="confirmDeleteBtn">
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay hidden" id="settingsModal">
+
+    <div class="modal settings-modal">
+
+        <div class="modal-header">
+
+            <h2>Settings</h2>
+
+            <button class="modal-close" data-close="settingsModal">
+                ×
+            </button>
+
+        </div>
+
+        <div class="settings-section">
+
+            <h3>Data</h3>
+
+            <button class="settings-action" id="exportDataBtn">
+                <span>↓</span>
+                Export all StudyPlanner data
+            </button>
+
+            <button class="settings-action" id="importDataBtn">
+                <span>↑</span>
+                Import StudyPlanner data
+            </button>
+
+            <input
+                type="file"
+                id="importFile"
+                accept=".json,application/json"
+                hidden
+            >
+
+        </div>
+
+        <div class="settings-note">
+            Your data is stored locally in this browser.
+            No account or server is required.
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SUBJECT MENU -->
+<div class="context-menu hidden" id="contextMenu">
+
+    <button id="renameContextBtn">
+        Rename
+    </button>
+
+    <button id="deleteContextBtn" class="context-danger">
+        Delete
+    </button>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
